@@ -1,7 +1,6 @@
 string music_selection = "none";
 string music_song = "none";
 integer arrow_play_sound = FALSE;
-integer secondarymemory = 0;
 integer play_sound = FALSE;
 integer ichannel = 46195;
 integer cur_page = 1;
@@ -96,17 +95,16 @@ return;
 string check_output(float A){if(.01<=A){return(string)A;}return"OFF";}
 option_topmenu()
 {
-list a =llGetLinkPrimitiveParams(2,[PRIM_DESC]);
-list items = llParseString2List(llList2String(a,0),["="],[]);
-integer music_list = llGetListLength(songlist);    
-integer page= (music_list / 9) + 1 ;
+list a=llGetLinkPrimitiveParams(2,[PRIM_DESC]);
+list items=llParseString2List(llList2String(a,0),["="],[]);
+integer music_list=llGetListLength(songlist);    
+integer page=(music_list / 9) + 1 ;
 llTextBox(llGetOwner(),
 "\n"+"[ Status ]"+"\n\n"+
-"Memory Notecard = "+(string)secondarymemory+"\n"+
 "Memory = "+(string)llGetFreeMemory()+"\n"+
 "Sound Radius = "+(string)llDeleteSubString(check_output(llList2Float(items,1)),4,100)+"\n"+
 "Volume = "+(string)llDeleteSubString(check_output(llList2Float(items,0)),4,100)+"\n"+
-"Musics = "+(string)(music_list-1)+"\n"+
+"Musics = "+(string)music_list+"\n"+
 "Page = "+(string)page+"\n\n"+
 "[ Command Format ]"+"\n\n"+
 "Search > ( s/music )"+"\n"+
@@ -170,13 +168,13 @@ default
       if((string)llList2String(items0,0) == "v")
       {
       list a =llGetLinkPrimitiveParams(2,[PRIM_DESC]); list items = llParseString2List(llList2String(a,0),["="],[]);
-      llSetLinkPrimitiveParamsFast(2,[PRIM_DESC,(string)llList2Float(items0,1)+"="+llList2String(items,1)]);
+      llSetLinkPrimitiveParamsFast(2,[PRIM_DESC,llDeleteSubString((string)llList2Float(items0,1),4,100)+"="+llList2String(items,1)]);
       llAdjustSoundVolume(llList2Float(items0,1)); dialog_topmenu();
       }
       if((string)llList2String(items0,0) == "r")
       {
       list a =llGetLinkPrimitiveParams(2,[PRIM_DESC]); list items = llParseString2List(llList2String(a,0),["="],[]);
-      llSetLinkPrimitiveParamsFast(2,[PRIM_DESC,llList2String(items,0)+"="+(string)llList2Float(items0,1)]);
+      llSetLinkPrimitiveParamsFast(2,[PRIM_DESC,llList2String(items,0)+"="+llDeleteSubString((string)llList2Float(items0,1),4,100)]); 
       llLinkSetSoundRadius(LINK_THIS,llList2Float(items0,1)); dialog_topmenu();
       }
       if(text == "[  🔀  ]")
