@@ -3,13 +3,13 @@
 2 prims
 
 
-//1=0
 
 
-list a =llGetLinkPrimitiveParams(2,[PRIM_DESC]);
+
+list a =llGetLinkPrimitiveParams(2,[PRIM_DESC]);               //get object description
 
 
-list items = llParseString2List(llList2String(a,0),["="],[]);
+list items = llParseString2List(llList2String(a,0),["="],[]);               //1=0
 
 
 llLinkSetSoundRadius(LINK_THIS,llList2Float(items,1));
