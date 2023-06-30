@@ -2,6 +2,10 @@
 
 2 prims
 
+
+//1=0
+
+
 list a =llGetLinkPrimitiveParams(2,[PRIM_DESC]);
 
 
