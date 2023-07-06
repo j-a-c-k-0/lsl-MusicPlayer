@@ -34,7 +34,7 @@ default
     }
     state_entry() 
     {
-    llSetLinkTextureAnim(LINK_THIS, ANIM_ON | LOOP, ALL_SIDES,4,2, 0, 64, 8 );
+    llSetLinkTextureAnim(2, ANIM_ON | LOOP, 2, 3, 6, 0, 64, 6.4 );
     }
     link_message(integer sender_num, integer num, string msg, key id)
     {
@@ -47,10 +47,9 @@ default
           llMessageLinked(LINK_THIS,0,"erase", NULL_KEY);
           if(readnote(nname) == 0)
           {
-          llOwnerSay("error could not find notecard");
+          llSay(0,"error could not find notecard");
           }
-          llOwnerSay("Playing [ " + nname+" ]");
-          }
+       }
     }
     dataserver(key keyQueryId, string strData)
     {
