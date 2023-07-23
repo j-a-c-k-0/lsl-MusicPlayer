@@ -49,7 +49,7 @@ dialog_topmenu()
 { 
 list a =llGetLinkPrimitiveParams(2,[PRIM_DESC]);
 list items = llParseString2List(llList2String(a,0),["="],[]);
-llDialog(llGetOwner(),"main"+"\n"+"\n"+
+llDialog(userUUID,"main"+"\n"+"\n"+
 "Playing = "+music_selection+"\n"+
 "Sound Radius = "+(string)llDeleteSubString(check_output(llList2Float(items,1)),4,100)+"\n"+
 "Volume = "+(string)llDeleteSubString(check_output(llList2Float(items,0)),4,100)+"\n"
@@ -78,7 +78,7 @@ for(; i < songsonpage; ++i)
 dbuf += ["Play #" + (string)(fspnum+i)];
 }
 list snlist = numerizelist(llList2List(songlist, fspnum, (page*9)-1), fspnum, ". ");
-llDialog(llGetOwner(),"Music = "+music_selection+"\n\n"+llDumpList2String(snlist, "\n"),order_buttons(dbuf + ["<<<", "[ main ]", ">>>"]),ichannel);
+llDialog(userUUID,"Music = "+music_selection+"\n\n"+llDumpList2String(snlist, "\n"),order_buttons(dbuf + ["<<<", "[ main ]", ">>>"]),ichannel);
 }
 dialog0()
 {
@@ -105,7 +105,7 @@ list a=llGetLinkPrimitiveParams(2,[PRIM_DESC]);
 list items=llParseString2List(llList2String(a,0),["="],[]);
 integer music_list=llGetListLength(songlist);    
 integer page=(music_list / 9) + 1 ;
-llTextBox(llGetOwner(),
+llTextBox(userUUID,
 "\n"+"[ Status ]"+"\n\n"+
 "Memory = "+(string)llGetFreeMemory()+"\n"+
 "Sound Radius = "+(string)llDeleteSubString(check_output(llList2Float(items,1)),4,100)+"\n"+
@@ -156,7 +156,7 @@ default
       if(text == "[ ⚙ setting ]"){option_topmenu();}
       if(text == "[  ♫  ]"){dialog_songmenu(cur_page);}
       if(text == "[ 📁 get ]"){if(userUUID==llGetOwner()){get_inventory();}}
-      if(text == "[  ⭮  ]"){llMessageLinked(LINK_THIS, 0,"start_over",""); dialog_topmenu();}
+      if(text == "[  ⭮  ]"){if(play_sound == TRUE){llMessageLinked(LINK_THIS, 0,"start_over","");}dialog_topmenu();}
       if(text == "[  ▶  ]"){play_sound = TRUE; llMessageLinked(LINK_THIS, 0,"[ Play ]",""); dialog_topmenu();}
       if(text == "[  ⏸  ]"){play_sound = FALSE; llMessageLinked(LINK_THIS, 0,"[ Pause ]",""); dialog_topmenu();}
       if(text == "[  ⏩  ]"){play_sound = TRUE;arrow_play_sound = TRUE;arrow_music();dialog_topmenu();}
