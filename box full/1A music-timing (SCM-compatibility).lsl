@@ -1,3 +1,4 @@
+integer check_song_finish = FALSE;
 integer music_num; 
 float timing_subtraction =1.0;
 float music_timing;
@@ -12,13 +13,22 @@ if (a > 56) { llLoopSound(b,llList2Float(items,0)); }else{ llPlaySound(b,llList2
 }
 playmusic()
 {
+  list a =llGetLinkPrimitiveParams(2,[PRIM_DESC]); list items = llParseString2List(llList2String(a,0),["="],[]);
+  if(check_song_finish == TRUE){if(llList2String(items,2) == "1")
+  {
+    llStopSound(); music_song = []; music_timing = 0;
+    check_song_finish = FALSE; llMessageLinked(LINK_THIS, 0,"[autoplay]",""); return;
+  } } 
   integer Length = llGetListLength(music_song);
   if (music_num < Length)
   {
   music_timing = music_timing;
   length_mode_sound(music_timing,llList2String(music_song, music_num)); music_num += 1;
-  if((key)llList2String(music_song, music_num)){ llPreloadSound(llList2String(music_song, music_num)); }else{ music_num = 0; }
-} }
+  if((key)llList2String(music_song, music_num)){ llPreloadSound(llList2String(music_song, music_num));  
+  }else{ 
+  music_num = 0;
+  if(llList2String(items,2) == "1"){check_song_finish = TRUE;}
+}}}
 sound_upload(string uuid)
 { 
   if((key)uuid)
