@@ -1,4 +1,5 @@
 integer safe_fail_trigger = FALSE;
+integer check_song_finish = FALSE;
 integer music_num; 
 float music_timing;
 float rate = 0.1;
@@ -24,6 +25,12 @@ if (a > 56) { llLoopSound(b,llList2Float(items,0)); }else{ llPlaySound(b,llList2
 }
 playmusic()
 {
+  list a =llGetLinkPrimitiveParams(2,[PRIM_DESC]); list items = llParseString2List(llList2String(a,0),["="],[]);
+  if(check_song_finish == TRUE){if(llList2String(items,2) == "1")
+  {
+    llStopSound(); music_song = []; music_timing = 0;
+    check_song_finish = FALSE; llMessageLinked(LINK_THIS, 0,"[autoplay]",""); return;
+  } }  
   if(safe_fail_trigger == TRUE) 
   {
   llOwnerSay("could not play [ fail-safe triggered ]"); music_timing = 0; return;   
@@ -35,8 +42,11 @@ playmusic()
   music_timing = llList2Float(A,0); 
   length_mode_sound(llList2Float(A,0),llList2String(A,1)); music_num += 1;
   list B = llParseString2List(llList2String(music_song, music_num), ["="], []);
-  if((key)llList2String(B,1)){ llPreloadSound(llList2String(B,1)); }else{ music_num = 0; }
-} }
+  if((key)llList2String(B,1)){ llPreloadSound(llList2String(B,1));
+  }else{ 
+  music_num = 0;
+  if(llList2String(items,2) == "1"){check_song_finish = TRUE;}
+}}}
 default
 {
     on_rez(integer start_param) 
