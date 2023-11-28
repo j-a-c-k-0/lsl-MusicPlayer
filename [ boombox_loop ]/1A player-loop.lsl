@@ -32,7 +32,7 @@ newlist += [(string)(start + i) + apnd + llList2String(tlist, i)];
 }return newlist;}
 get_inventory(){if (llGetInventoryKey(music_selection)==NULL_KEY){llOwnerSay(music_selection+"|"+music_song);}else{llGiveInventory(llGetOwner(),music_selection);}}
 string play_sound_0(){if(music_selection == "none"){return"[  ◼  ]";}if(play_sound == FALSE){return"[  ▶  ]";}else{return"[  ⏸  ]";}}
-type_option(){llDialog(userUUID,"type",["[ sound ]", "[ uuid ]"],ichannel);}
+type_option(){llDialog(llGetOwner(),"type",["[ sound ]","[ main ]","[ uuid ]","[  🞪  ]"],ichannel);}
 dialog_topmenu()
 { 
 list a =llGetLinkPrimitiveParams(2,[PRIM_DESC]);
@@ -69,7 +69,7 @@ for(; i < songsonpage; ++i)
 dbuf += ["Play #" + (string)(fspnum+i)];
 }
 list snlist = numerizelist(make_list(fspnum,i), fspnum, ". ");
-llDialog(userUUID,"Music = "+music_selection+"\n\n"+llDumpList2String(snlist, "\n"),order_buttons(dbuf + ["<<<", "[ main ]", ">>>"]),ichannel);
+llDialog(userUUID,"Music = "+music_selection+"\n\n"+llDumpList2String(snlist, "\n"),order_buttons(dbuf + ["<<<","[  ♫  ]", ">>>"]),ichannel);
 }
 list make_list(integer a,integer b) 
 {
@@ -157,7 +157,7 @@ default
       list items0 = llParseString2List(msg, ["="], []);   
       if(only_once == FALSE){if((key)msg){llSetTimerEvent(0);only_once = TRUE; userUUID = msg; dialog0();llSetTimerEvent(menu_time);return;}}
       if(msg == "owner_ride"){only_once = TRUE; llSetTimerEvent(0);userUUID = llGetOwner(); dialog0();llSetTimerEvent(menu_time);return;}
-      if(msg == "main"){dialog0();}
+      if(msg == "main"){type_option();}
       if((string)llList2String(items0,0) == "notecard")
       {
       play_type = TRUE; play_sound = TRUE;    
