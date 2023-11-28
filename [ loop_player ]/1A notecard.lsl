@@ -49,7 +49,7 @@ dbuf += ["Play #" + (string)(fspnum+i)];
 list snlist = numerizelist(make_list(fspnum,i), fspnum, ". ");
 llDialog(llGetOwner(),
 "Notecard Memory = "+(string)llGetFreeMemory()+"\n\n"+
-llDumpList2String(snlist, "\n"),order_buttons(dbuf + ["<<<", "[ main ]", ">>>"]),ichannel);
+llDumpList2String(snlist, "\n"),order_buttons(dbuf + ["<<<", "[  ♫  ]", ">>>"]),ichannel);
 }
 list make_list(integer a,integer b) 
 {
@@ -109,7 +109,7 @@ default
     {  
     if(skey == llGetOwner()) 
     {
-        if(text == "[ main ]"){llMessageLinked(LINK_THIS, 0,"main", "");}
+        if(text == "[  ♫  ]"){llMessageLinked(LINK_THIS, 0,"main", "");}
         else if(text == ">>>") dialog_songmenu(cur_page+1);
         else if(text == "<<<") dialog_songmenu(cur_page-1);
         else if(llToLower(llGetSubString(text,0,5)) == "play #")
