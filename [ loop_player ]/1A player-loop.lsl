@@ -32,7 +32,7 @@ newlist += [(string)(start + i) + apnd + llList2String(tlist, i)];
 }return newlist;}
 get_inventory(){if (llGetInventoryKey(music_selection)==NULL_KEY){llOwnerSay(music_selection+"|"+music_song);}else{llGiveInventory(llGetOwner(),music_selection);}}
 string play_sound_0(){if(music_selection == "none"){return"[  ◼  ]";}if(play_sound == FALSE){return"[  ▶  ]";}else{return"[  ⏸  ]";}}
-type_option(){llDialog(llGetOwner(),"type",["[ sound ]", "[ uuid ]"],ichannel);}
+type_option(){llDialog(llGetOwner(),"type",["[ sound ]","[ main ]","[ uuid ]","[  🞪  ]"],ichannel);}
 dialog_topmenu()
 { 
 list a =llGetLinkPrimitiveParams(2,[PRIM_DESC]);
@@ -44,8 +44,7 @@ llDialog(llGetOwner(),"main"+"\n"+"\n"+
 ,["[ ⚙ setting ]","[  🔀  ]","[ 🛠️️ option ]","[  ⏪  ]",play_sound_0(),"[  ⏩  ]","[  🞪  ]","[  ♫  ]","[  ⭮  ]"],ichannel);
 }
 dialog_option()
-{ 
-
+{
   if(play_type == FALSE)
   {
   llDialog(llGetOwner(),"option"+"\n"+"\n"+"Uuid = "+(string)llGetInventoryKey(music_song)+"\n"+"Music = "+music_selection+"\n",["[ 📁 get ]","[ ⟳ reset ]","[ main ]"],ichannel);
@@ -69,7 +68,7 @@ for(; i < songsonpage; ++i)
 dbuf += ["Play #" + (string)(fspnum+i)];
 }
 list snlist = numerizelist(make_list(fspnum,i), fspnum, ". ");
-llDialog(llGetOwner(),"Music = "+music_selection+"\n\n"+llDumpList2String(snlist, "\n"),order_buttons(dbuf + ["<<<", "[ main ]", ">>>"]),ichannel);
+llDialog(llGetOwner(),"Music = "+music_selection+"\n\n"+llDumpList2String(snlist, "\n"),order_buttons(dbuf + ["<<<","[  ♫  ]", ">>>"]),ichannel);
 }
 list make_list(integer a,integer b) 
 {
@@ -163,7 +162,7 @@ default
     link_message(integer sender_num, integer num, string msg, key id)
     {
       list items0 = llParseString2List(msg, ["="], []);   
-      if(msg == "main"){dialog0();}
+      if(msg == "main"){type_option();}
       if((string)llList2String(items0,0) == "notecard")
       {
       play_type = TRUE; play_sound = TRUE;    
