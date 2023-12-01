@@ -15,7 +15,7 @@ playmusic()
   list items = llParseString2List(llGetObjectDesc(),["="],[]);
   if(check_song_finish == TRUE){if(llList2String(items,2) == "1")
   {
-    llStopSound(); music_song = []; music_timing = 0;
+    llStopSound(); music_song = []; music_timing = 5;
     llMessageLinked(LINK_THIS, 0,"[autoplay]",""); return;
   } } 
   integer Length = llGetListLength(music_song);
@@ -52,24 +52,20 @@ default
     {   
     llStopSound();
     }
-    run_time_permissions(integer perm)
-    {
-    if(PERMISSION_TAKE_CONTROLS & perm){llTakeControls( CONTROL_BACK|CONTROL_FWD, TRUE, TRUE );}
-    }
     timer()
     {
     llSetTimerEvent(0); playmusic(); llSetTimerEvent(music_timing);
     }
     link_message(integer sender_num, integer num, string msg, key id)
     {
-      list items1 = llParseString2List(msg, ["|"], []); list items0 = llParseString2List(msg, ["/"], []);
-      if(llList2String(items1,0) == "upload_note"){sound_upload(llList2String(items1,1));}       
+      list items1 = llParseString2List(msg, ["|"], []); list items0 = llParseString2List(msg, ["/"], []); 
       if(llList2String(items0,0) == "v"){llAdjustSoundVolume(llList2Float(items0,1));}
-      if(llList2String(items0,0) == "r"){llLinkSetSoundRadius(LINK_THIS,llList2Float(items0,1));}
       if(msg == "erase"){check_song_finish = FALSE; music_num = 0; llStopSound(); music_song = []; llSetTimerEvent(0);}
+      if(llList2String(items1,0) == "upload_note"){llSetTimerEvent(0); sound_upload(llList2String(items1,1));}    
+      if(llList2String(items0,0) == "r"){llLinkSetSoundRadius(LINK_THIS,llList2Float(items0,1));} 
+      if(msg == "[ Reset ]"){music_num = 0; llStopSound(); music_song = []; llSetTimerEvent(0);}
       if(msg == "start"){music_num = 0; llStopSound(); llSetTimerEvent(rate);}
       if(msg == "start_over"){music_num = 0; llStopSound(); llSetTimerEvent(0.1);}
-      if(msg == "[ Reset ]"){music_num = 0; llStopSound(); music_song = []; llSetTimerEvent(0);}
       if(msg == "[ Pause ]"){llStopSound(); llSetTimerEvent(0);}
       if(msg == "[ Play ]"){llSetTimerEvent(0.1);}
     } }
