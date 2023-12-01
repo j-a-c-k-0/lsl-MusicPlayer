@@ -111,6 +111,7 @@ default
     state_entry() 
     {
     ReadNotecard();
+    llSetLinkTextureAnim(2, ANIM_ON | LOOP, 2, 3, 6, 0, 64, 6.4 );
     }
     listen(integer chan, string sname, key skey, string text)
     {  
