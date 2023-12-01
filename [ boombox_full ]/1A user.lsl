@@ -88,6 +88,6 @@ default
       }
       if(ID==llGetOwner())
       {
-      llMessageLinked(LINK_THIS,0,"owner_ride","");     
-      llRegionSayTo(userUUID,0,"owner_override");userUUID = ID;return;
+      llRegionSayTo(userUUID,0,"owner_override");  
+      llMessageLinked(LINK_THIS,0,"owner_ride",""); userUUID = ID;return;
    }}}}
