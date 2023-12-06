@@ -11,14 +11,8 @@ key notecardKey;
 
 startup()
 {
-cache_clear(); 
-ReadNotecard();
+llLinksetDataDeleteFound("m-","");ReadNotecard();
 llRequestPermissions(llGetOwner(),PERMISSION_TAKE_CONTROLS);
-}
-cache_clear()
-{
-integer Length = llLinksetDataCountKeys(); integer x;
-for ( ; x < Length; x += 1){llLinksetDataDelete("m-"+(string)x);}
 }
 ReadNotecard()
 {
