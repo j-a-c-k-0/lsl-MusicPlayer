@@ -12,13 +12,7 @@ key userUUID;
 
 startup()
 {
-cache_clear(); 
-ReadNotecard();
-}
-cache_clear()
-{
-integer Length = llLinksetDataCountKeys(); integer x;
-for ( ; x < Length; x += 1){llLinksetDataDelete("m-"+(string)x);}
+llLinksetDataDeleteFound("m-","");ReadNotecard();
 }
 ReadNotecard()
 {
