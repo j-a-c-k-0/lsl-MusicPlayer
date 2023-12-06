@@ -7,13 +7,12 @@ list music_song;
 
 length_mode_sound(float a,string b)
 {
-list items = llParseString2List(llGetObjectDesc(),["="],[]); llLinkSetSoundRadius(LINK_THIS,llList2Float(items,1));
-if (a > 56) { llLoopSound(b,llList2Float(items,0)); }else{ llPlaySound(b,llList2Float(items,0)); }
+llLinkSetSoundRadius(LINK_THIS,(float)llLinksetDataRead("r"));
+if (a > 56) { llLoopSound(b,(float)llLinksetDataRead("v")); }else{ llPlaySound(b,(float)llLinksetDataRead("v")); }
 }
 playmusic()
 {
-  list items = llParseString2List(llGetObjectDesc(),["="],[]);
-  if(check_song_finish == TRUE){if(llList2String(items,2) == "1")
+  if(check_song_finish == TRUE){if(llLinksetDataRead("a") == "1")
   {
     llStopSound(); music_song = []; music_timing = 0;
     llMessageLinked(LINK_THIS, 0,"[autoplay]",""); return;
@@ -24,9 +23,9 @@ playmusic()
   music_timing = music_timing;
   length_mode_sound(music_timing,llList2String(music_song, music_num)); music_num += 1;
   if((key)llList2String(music_song, music_num)){ llPreloadSound(llList2String(music_song, music_num));  
-  }else{ 
+  }else{
   music_num = 0;
-  if(llList2String(items,2) == "1"){check_song_finish = TRUE;}
+  if(llLinksetDataRead("a") == "1"){check_song_finish = TRUE;}
 }}}
 sound_upload(string uuid)
 { 
