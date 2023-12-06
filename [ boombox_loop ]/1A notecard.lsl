@@ -1,16 +1,25 @@
 string notecardName = "uuids";
 integer arrow_play_sound = FALSE;
-integer only_once = FALSE;
 integer ichannel = 07899;
 integer cur_page = 1;
 integer notecardLine;
 integer chanhandlr;
 integer counter;
+integer music;
 key notecardQueryId;
 key notecardKey;
 key userUUID;
-list songlist;
 
+startup()
+{
+cache_clear(); 
+ReadNotecard();
+}
+cache_clear()
+{
+integer Length = llLinksetDataCountKeys(); integer x;
+for ( ; x < Length; x += 1){llLinksetDataDelete("m-"+(string)x);}
+}
 ReadNotecard()
 {
     if (llGetInventoryKey(notecardName) == NULL_KEY)
@@ -36,7 +45,7 @@ newlist += [(string)(start + i) + apnd + llList2String(tlist, i)];
 }return newlist;}
 dialog_songmenu(integer page)
 {
-integer slist_size = llGetListLength(songlist);
+integer slist_size = llLinksetDataCountKeys()-2;
 integer pag_amt = llCeil((float)slist_size / 9.0);
 if(page > pag_amt) page = 1;
 else if(page < 1) page = pag_amt;
@@ -50,32 +59,29 @@ for(; i < songsonpage; ++i)
 dbuf += ["Play #" + (string)(fspnum+i)];
 }
 list snlist = numerizelist(make_list(fspnum,i), fspnum, ". ");
-llDialog(userUUID,
-"Notecard Memory = "+(string)llGetFreeMemory()+"\n\n"+
+llDialog(userUUID,"music selection"+"\n\n"+
 llDumpList2String(snlist, "\n"),order_buttons(dbuf + ["<<<", "[  ♫  ]", ">>>"]),ichannel);
 }
 list make_list(integer a,integer b) 
 {
-list inventory;
-integer i;
-for (i = 0; i < b; ++i)
-{
-list items = llParseString2List(llList2String(songlist,a+i),["|"],[]);
-inventory += llDeleteSubString(llList2String(items,0),30,1000);
-}
-return inventory;
+  list inventory; integer i;
+  for(i = 0; i < b; ++i)
+  {
+  list items = llParseString2List(llLinksetDataRead("m-"+(string)(a+i)),["|"],[]);
+  inventory += llDeleteSubString(llList2String(items,0),40,1000);
+  }return inventory;
 }
 search_music(string search)
 {
         ichannel = llFloor(llFrand(1000000) - 100000); llListenRemove(chanhandlr); chanhandlr = llListen(ichannel, "", NULL_KEY, "");
-        integer Lengthx = llGetListLength(songlist); integer x;
+        integer Lengthx = llLinksetDataCountKeys()-2; integer x;
         for ( ; x < Lengthx; x += 1)
-        {
-        string A = llToLower(search); string B = llToLower(llList2String(songlist, x));
+        { 
+        string A = llToLower(search); string B = llToLower(llLinksetDataRead("m-"+(string)x));
         integer search_found = ~llSubStringIndex(B,A);
         if (search_found)
         { 
-        list item = llParseString2List(llList2String(songlist, x), ["|"], []);
+        list item = llParseString2List(llLinksetDataRead("m-"+(string)x), ["|"], []);
         integer Division= x / 9 ; llRegionSayTo(userUUID,0,"[ "+llList2String(item,0)+" ] [ page = "+(string)(Division+1)+" list = "+(string)x+" ]");
         dialog_songmenu(Division+1);  
         return;
@@ -89,11 +95,11 @@ ichannel = llFloor(llFrand(1000000) - 100000); llListenRemove(chanhandlr); chanh
 arrow_music()
 {
   if(arrow_play_sound == TRUE){counter = counter + 1;}else{counter = counter - 1;}
-  if(-1>=counter){counter = llGetListLength(songlist)-1;}if((counter)>llGetListLength(songlist)-1){counter = 0;}else
+  if(-1>=counter){counter = llLinksetDataCountKeys()-3;}if((counter)>llLinksetDataCountKeys()-3){counter = 0;}else
   {
-  llMessageLinked(LINK_THIS, 0,"notecard="+llList2String(songlist,counter),""); return;
+  llMessageLinked(LINK_THIS, 0,"notecard="+llLinksetDataRead("m-"+(string)counter),""); cur_page = (counter/9)+1; return;
   }
-  llMessageLinked(LINK_THIS, 0,"notecard="+llList2String(songlist,0),"");
+  llMessageLinked(LINK_THIS, 0,"notecard="+llLinksetDataRead("m-0"),""); cur_page = (counter/9)+1; return;
 }
 default 
 {
@@ -103,28 +109,24 @@ default
     }
     changed(integer change)
     {
-        if (change & CHANGED_INVENTORY)         
-        {
-        llResetScript();
-        }
+    if(change & CHANGED_INVENTORY){llResetScript();}
     }
     state_entry() 
     {
-    ReadNotecard();
-    llSetLinkTextureAnim(2, ANIM_ON | LOOP, 2, 3, 6, 0, 64, 6.4 );
+    startup();
     }
     listen(integer chan, string sname, key skey, string text)
     {  
     if(skey == userUUID) 
     {
-        llMessageLinked(LINK_THIS,0,"menu_in_use","");
-        if(text == "[  ♫  ]"){llMessageLinked(LINK_THIS, 0,"main", "");}
+        llMessageLinked(LINK_THIS,0,"menu_in_use",""); 
+        if(text == "[  ♫  ]"){llMessageLinked(LINK_THIS, 0,"type", "");}
         else if(text == ">>>") dialog_songmenu(cur_page+1);
         else if(text == "<<<") dialog_songmenu(cur_page-1);
         else if(llToLower(llGetSubString(text,0,5)) == "play #")
         {
-        integer pnum = (integer)llGetSubString(text, 6, -1);
-        llMessageLinked(LINK_THIS,0,"notecard="+llList2String(songlist,pnum),"");
+        integer pnum = (integer)llGetSubString(text,6,-1);
+        llMessageLinked(LINK_THIS, 0,"notecard="+llLinksetDataRead("m-"+(string)pnum),"");
         dialog0();
     } } }
     link_message(integer sender_num, integer num, string msg, key id)
@@ -132,23 +134,24 @@ default
       list items = llParseString2List(msg,["="],[]); 
       if(llList2String(items,0) == "notecard_uuid"){userUUID = llList2String(items,1); dialog0();}
       if(llList2String(items,0) == "search"){userUUID = llList2String(items,2);search_music(llList2String(items,1));}
-      if(msg == "owner_ride"){only_once = TRUE; userUUID = llGetOwner(); return;}
+      if(msg == "owner_ride"){userUUID = llGetOwner(); return;}
       if(msg == "⏪"){arrow_play_sound = FALSE;arrow_music();}
-      if(msg == "exit_out"){userUUID = "";only_once = FALSE;}
+      if(msg == "exit_out"){userUUID = "";}
       if(msg == "⏩"){arrow_play_sound = TRUE;arrow_music();}
       if(msg == "🔀")
       {
-      integer x = llFloor(llFrand(llGetListLength(songlist))); counter = x;   
-      llMessageLinked(LINK_THIS,0,"notecard="+llList2String(songlist,x),"");
+      integer x = llFloor(llFrand(llLinksetDataCountKeys()-2)); counter = x; cur_page = (x/9)+1;   
+      llMessageLinked(LINK_THIS, 0,"notecard="+llLinksetDataRead("m-"+(string)x),"");
+      llMessageLinked(LINK_THIS, 0,"main", "");
     } }
     dataserver(key query_id, string data)
     {
         if (query_id == notecardQueryId)
         {
-            if (data == EOF){llMessageLinked(LINK_THIS,0,"music_number="+(string)llGetListLength(songlist), NULL_KEY);}else
+            if (data == EOF){ }else
             {
-            songlist += data; ++notecardLine;
-            notecardQueryId = llGetNotecardLine(notecardName, notecardLine);
+            llLinksetDataWrite("m-"+(string)music,data);
+            music = music + 1; ++notecardLine; notecardQueryId = llGetNotecardLine(notecardName, notecardLine);
             }
         }
     }
