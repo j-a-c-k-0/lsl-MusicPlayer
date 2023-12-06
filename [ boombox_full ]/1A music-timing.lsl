@@ -13,23 +13,22 @@ integer Y; for ( ; Y < Length; Y += 1)
   if((key)llList2String(A,1)){ }else
   {
   safe_fail_trigger = TRUE;    
-  llOwnerSay("Invalid uuid list "+(string)Y+" [ "+llList2String(A,1)+" ]"); 
+  llOwnerSay("Invalid uuid list "+(string)Y+" [ "+llList2String(A,1)+" ]");
   llSetTimerEvent(0);
   return;
 } }llSetTimerEvent(rate);}
 length_mode_sound(float a,string b)
 {
-list items = llParseString2List(llGetObjectDesc(),["="],[]); llLinkSetSoundRadius(LINK_THIS,llList2Float(items,1));
-if (a > 56) { llLoopSound(b,llList2Float(items,0)); }else{ llPlaySound(b,llList2Float(items,0)); }
+llLinkSetSoundRadius(LINK_THIS,(float)llLinksetDataRead("r"));
+if (a > 56) { llLoopSound(b,(float)llLinksetDataRead("v")); }else{ llPlaySound(b,(float)llLinksetDataRead("v")); }
 }
 playmusic()
 {
-  list items = llParseString2List(llGetObjectDesc(),["="],[]);
-  if(check_song_finish == TRUE){if(llList2String(items,2) == "1")
+  if(check_song_finish == TRUE){if(llLinksetDataRead("a") == "1")
   {
     llStopSound(); music_song = []; music_timing = 5;
     llMessageLinked(LINK_THIS, 0,"[autoplay]",""); return;
-  } }
+  } } 
   if(safe_fail_trigger == TRUE) 
   {
   llSay(0,"could not play [ fail-safe triggered ]"); music_timing = 0; return;   
@@ -44,7 +43,7 @@ playmusic()
   if((key)llList2String(B,1)){ llPreloadSound(llList2String(B,1)); 
   }else{ 
   music_num = 0;
-  if(llList2String(items,2) == "1"){check_song_finish = TRUE;}
+  if(llLinksetDataRead("a") == "1"){check_song_finish = TRUE;}
 }}}
 default
 {
@@ -68,7 +67,7 @@ default
     {
       list items1 = llParseString2List(msg, ["|"], []); list items0 = llParseString2List(msg, ["/"], []);
       if(msg == "erase"){check_song_finish = FALSE; safe_fail_trigger = FALSE; music_num = 0; llStopSound(); music_song = []; llSetTimerEvent(0);}
-      if(llList2String(items1,0) == "upload_note"){llSetTimerEvent(0); music_song += (list)[llList2String(items1,1)];} 
+      if(llList2String(items1,0) == "upload_note"){llSetTimerEvent(0);music_song += (list)[llList2String(items1,1)];} 
       if(msg == "start"){safe_fail_trigger = FALSE; music_num = 0; llStopSound(); llSetTimerEvent(0); error_test();}
       if(llList2String(items0,0) == "r"){llLinkSetSoundRadius(LINK_THIS,llList2Float(items0,1));}
       if(msg == "[ Reset ]"){music_num = 0; llStopSound(); music_song = []; llSetTimerEvent(0);}
