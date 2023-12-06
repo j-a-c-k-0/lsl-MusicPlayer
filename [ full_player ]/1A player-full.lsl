@@ -1,5 +1,8 @@
 string music_selection = "none";
 string music_song = "none";
+string default_radius = "0";
+string default_volume = "1";
+string default_mode = "0";
 integer arrow_play_sound = FALSE;
 integer play_sound = FALSE;
 integer menu = TRUE;
@@ -8,10 +11,7 @@ integer ichannel = 07899;
 integer cur_page = 1;
 integer chanhandlr;
 integer counter;
-integer Length;
 integer c = 80;
-float default_sound_radius = 0;
-float default_volume = 1;
 
 startup()
 {
@@ -31,11 +31,7 @@ for(; i < lsize; i++)
 {
 newlist += [(string)(start + i) + apnd + llList2String(tlist, i)];
 }return newlist;}
-string play_mode()
-{
-list items = llParseString2List(llGetObjectDesc(),["="],[]);
-if(llList2String(items,2) == "1"){return"auto";}else{return"loop";}
-}
+string play_mode(){if(llLinksetDataRead("a") == "1"){return"auto";}else{return"loop";}}
 get_inventory(){if (llGetInventoryKey(music_selection)==NULL_KEY){llOwnerSay(music_selection+"|"+music_song);}else{llGiveInventory(llGetOwner(),music_selection);}}
 string play_sound_0(){if(music_selection == "none"){return"[  ◼  ]";}if(play_sound == FALSE){return"[  ▶  ]";}else{return"[  ⏸  ]";}}
 dialog_topmenu()
@@ -44,8 +40,8 @@ list a =llGetLinkPrimitiveParams(2,[PRIM_DESC]);
 list items = llParseString2List(llGetObjectDesc(),["="],[]);
 llDialog(llGetOwner(),"main"+"\n"+"\n"+
 "Playing = "+music_selection+"\n"+
-"Sound Radius = "+(string)llDeleteSubString(check_output(llList2Float(items,1)),4,100)+"\n"+
-"Volume = "+(string)llDeleteSubString(check_output(llList2Float(items,0)),4,100)+"\n"+
+"Sound Radius = "+(string)llDeleteSubString(check_output((float)llLinksetDataRead("r")),4,300)+"\n"+
+"Volume = "+(string)llDeleteSubString(check_output((float)llLinksetDataRead("v")),4,300)+"\n"+
 "Mode = "+play_mode()+"\n"
 ,["[ ⚙ setting ]","[  🔀  ]","[ 🛠️️ option ]","[  ⏪  ]",play_sound_0(),"[  ⏩  ]","[  🞪  ]","[  ♫  ]","[  ⭮  ]"],ichannel);
 }
@@ -69,13 +65,13 @@ for(; i < songsonpage; ++i)
 dbuf += ["Play #" + (string)(fspnum+i)];
 }
 list snlist = numerizelist(make_list(fspnum,i), fspnum, ". ");
-llDialog(llGetOwner(),"music selection\n\n"+llDumpList2String(snlist, "\n"),order_buttons(dbuf + ["<<<","[  ♫  ]", ">>>"]),ichannel);
+llDialog(llGetOwner(),"music selection\n\n"+llDumpList2String(snlist, "\n"),order_buttons(dbuf + ["<<<","[ main ]", ">>>"]),ichannel);
 }
 list make_list(integer a,integer b) 
 {
 list inventory;
 integer i;
-for (i = 0; i < b; ++i){string name = llGetInventoryName(INVENTORY_NOTECARD,a+i);inventory += llDeleteSubString(name,30,1000);}
+for (i = 0; i < b; ++i){string name = llGetInventoryName(INVENTORY_NOTECARD,a+i);inventory += llDeleteSubString(name,40,1000);}
 return inventory;
 }
 dialog0()
@@ -94,18 +90,17 @@ if (search_found)
 integer Division= x / 9 ; llOwnerSay("[ "+llGetInventoryName(INVENTORY_NOTECARD,x)+" ] [ page = "+(string)(Division+1)+" list = "+(string)x+" ]");
 dialog_songmenu(Division+1);  
 return;
-}}llMessageLinked(LINK_THIS, 0,"search="+search, NULL_KEY);}
+}}llOwnerSay("Could not find anything");}
 string check_output(float A){if(.01<=A){return(string)A;}return"OFF";}
 option_topmenu()
 {
-list a=llGetLinkPrimitiveParams(2,[PRIM_DESC]);
-list items=llParseString2List(llGetObjectDesc(),["="],[]);
-integer music_list = llGetInventoryNumber(INVENTORY_NOTECARD)+notecard_music;   
+integer music_list = llGetInventoryNumber(INVENTORY_NOTECARD);   
 integer page=(music_list / 9) + 1 ;
 llTextBox(llGetOwner(),
 "\n"+"[ Status ]"+"\n\n"+
-"Sound Radius = "+(string)llDeleteSubString(check_output(llList2Float(items,1)),4,100)+"\n"+
-"Volume = "+(string)llDeleteSubString(check_output(llList2Float(items,0)),4,100)+"\n"+
+"Memory = "+(string)llLinksetDataAvailable()+"\n"+
+"Sound Radius = "+(string)llDeleteSubString(check_output((float)llLinksetDataRead("r")),4,300)+"\n"+
+"Volume = "+(string)llDeleteSubString(check_output((float)llLinksetDataRead("v")),4,300)+"\n"+
 "Musics = "+(string)music_list+"\n\n"+
 "[ Command Format ]"+"\n\n"+
 "Search > ( s/music )"+"\n"+
@@ -119,17 +114,17 @@ arrow_music()
   {
   music_selection = llGetInventoryName(INVENTORY_NOTECARD,counter);
   music_song = llGetInventoryName(INVENTORY_NOTECARD,counter);
-  playmusic(); return;
+  playmusic(); cur_page = (counter/9)+1; return;
   }
   music_selection = llGetInventoryName(INVENTORY_NOTECARD,0);
   music_song = llGetInventoryName(INVENTORY_NOTECARD,0);
-  playmusic();
+  playmusic(); cur_page = (counter/9)+1; return;
 }
 playmusic()
 {
   if(play_sound == TRUE)
   {
-  llMessageLinked(LINK_THIS, 0,"fetch_note_rationed|" + music_selection, NULL_KEY);
+  llMessageLinked(LINK_THIS, 0,"fetch_note_rationed|" + music_selection,NULL_KEY);
 } }
 default
 {
@@ -174,28 +169,20 @@ default
       if(text == "[  ⏪  ]"){play_sound = TRUE;arrow_play_sound = FALSE;arrow_music();dialog_topmenu();}
       if(text == "[  ▶  ]"){play_sound = TRUE; llMessageLinked(LINK_THIS, 0,"[ Play ]",""); dialog_topmenu();}
       if(text == "[  ⏸  ]"){play_sound = FALSE; llMessageLinked(LINK_THIS, 0,"[ Pause ]",""); dialog_topmenu();}
+      if(text == "[ auto ]"){llLinksetDataDelete("a");llLinksetDataWrite("a","0"); dialog_option();}
+      if(text == "[ loop ]"){llLinksetDataDelete("a");llLinksetDataWrite("a","1"); dialog_option();}
       if((string)llList2String(items0,0) == "s"){search_music(llList2String(items0,1));}
       if((string)llList2String(items0,0) == "v")
       {
-      list items = llParseString2List(llGetObjectDesc(),["="],[]);
-      llSetObjectDesc(llDeleteSubString((string)llList2Float(items0,1),4,100)+"="+llList2String(items,1)+"="+llList2String(items,2));
-      llAdjustSoundVolume(llList2Float(items0,1)); dialog_topmenu();
+      llLinksetDataDelete("v");llLinksetDataWrite("v",llDeleteSubString((string)llList2Float(items0,1),10,300));
+      llAdjustSoundVolume(llList2Float(items0,1)); 
+      dialog_topmenu();
       }
       if((string)llList2String(items0,0) == "r")
       {
-      list items = llParseString2List(llGetObjectDesc(),["="],[]);
-      llSetObjectDesc(llList2String(items,0)+"="+llDeleteSubString((string)llList2Float(items0,1),4,100)+"="+llList2String(items,2));
-      llLinkSetSoundRadius(LINK_THIS,llList2Float(items0,1)); dialog_topmenu();
-      }
-      if(text == "[ auto ]")
-      {
-      list items = llParseString2List(llGetObjectDesc(),["="],[]);
-      llSetObjectDesc(llList2String(items,0)+"="+llList2String(items,1)+"=0"); dialog_option();
-      }
-      if(text == "[ loop ]")
-      {
-      list items = llParseString2List(llGetObjectDesc(),["="],[]);
-      llSetObjectDesc(llList2String(items,0)+"="+llList2String(items,1)+"=1"); dialog_option();
+      llLinksetDataDelete("r");llLinksetDataWrite("r",llDeleteSubString((string)llList2Float(items0,1),10,300));
+      llLinkSetSoundRadius(LINK_THIS,llList2Float(items0,1)); 
+      dialog_topmenu();
       }
       if(text == "[  🔀  ]")
       {
@@ -203,12 +190,14 @@ default
       integer x = llFloor(llFrand(llGetInventoryNumber(INVENTORY_NOTECARD)));
       music_selection = llGetInventoryName(INVENTORY_NOTECARD,x);
       music_song = llGetInventoryName(INVENTORY_NOTECARD,x);
-      playmusic(); dialog_topmenu();
+      counter = x; playmusic(); dialog_topmenu();
+      cur_page = (x/9)+1;
       }
       if(text == "[ ⟳ reset ]")
       {
-      llSetObjectDesc((string)default_volume+"="+(string)default_sound_radius+"=0");
-      play_sound = FALSE; music_song = "none"; music_selection = "none"; cur_page = 1; llStopSound(); llSleep(0.2); dialog_topmenu();
+      llLinksetDataReset();llLinksetDataWrite("a",default_mode);llLinksetDataWrite("r",default_radius);llLinksetDataWrite("v",default_volume); 
+      music_song = "none"; music_selection = "none"; cur_page = 1; llStopSound(); llSleep(0.2); dialog_topmenu();
+      play_sound = FALSE; menu = FALSE; llMessageLinked(LINK_THIS, 0,"[ Reset ]",NULL_KEY);
       }
       else if(text == ">>>") dialog_songmenu(cur_page+1);
       else if(text == "<<<") dialog_songmenu(cur_page-1);
