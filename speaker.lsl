@@ -91,7 +91,7 @@ command message
 
 //llRegionSay(channel,"Loop="+b+"="+llLinksetDataRead("v"));
 //llRegionSay(channel,"Play="+b+"="+llLinksetDataRead("v"));
-//llRegionSayTo(llGetOwner(),"volume="+(string)llList2Float(items0,1));
+//llRegionSay(channel,"volume="+(string)llList2Float(items0,1));
 //llRegionSay(channel,"StopSound");
 
 ////////////////////////////////////////////////////////////////////////////////
