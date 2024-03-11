@@ -15,17 +15,17 @@ llLinkSetSoundRadius(LINK_THIS,(float)llLinksetDataRead("r"));
 if (a > 56) 
   { 
   llLoopSound(b,(float)llLinksetDataRead("v")); 
-  llRegionSayTo(llGetOwner(),channel,"Loop="+b+"="+llLinksetDataRead("v"));
+  llRegionSay(channel,"Loop="+b+"="+llLinksetDataRead("v"));
   }else{ 
   llPlaySound(b,(float)llLinksetDataRead("v")); 
-  llRegionSayTo(llGetOwner(),channel,"Play="+b+"="+llLinksetDataRead("v"));
+  llRegionSay(channel,"Play="+b+"="+llLinksetDataRead("v"));
   }
 }
 playmusic()
 {
   if(check_song_finish == TRUE){if(llLinksetDataRead("a") == "1")
   {
-    llRegionSayTo(llGetOwner(),channel,"StopSound");llStopSound(); music_song = []; music_timing = 0;
+    llRegionSay(channel,"StopSound");llStopSound(); music_song = []; music_timing = 0;
     llMessageLinked(LINK_THIS, 0,"[autoplay]",""); return;
   } } 
   integer Length = llGetListLength(music_song);
@@ -75,13 +75,13 @@ default
     {
       list items1 = llParseString2List(msg, ["|"], []); list items0 = llParseString2List(msg, ["/"], []);
       if(llList2String(items1,0) == "upload_note"){sound_upload(llList2String(items1,1));}       
-      if(llList2String(items0,0) == "v"){ llRegionSayTo(llGetOwner(),channel,"volume="+(string)llList2Float(items0,1));llAdjustSoundVolume(llList2Float(items0,1));}
+      if(llList2String(items0,0) == "v"){ llRegionSay(channel,"volume="+(string)llList2Float(items0,1));llAdjustSoundVolume(llList2Float(items0,1));}
       if(llList2String(items0,0) == "r"){llLinkSetSoundRadius(LINK_THIS,llList2Float(items0,1));}
-      if(msg == "erase"){llRegionSayTo(llGetOwner(),channel,"StopSound");check_song_finish = FALSE; music_num = 0; llStopSound(); music_song = []; llSetTimerEvent(0);}
-      if(msg == "start"){llRegionSayTo(llGetOwner(),channel,"StopSound");music_num = 0; llStopSound(); llSetTimerEvent(rate);}
-      if(msg == "start_over"){llRegionSayTo(llGetOwner(),channel,"StopSound");music_num = 0; llStopSound(); llSetTimerEvent(0.1);}
-      if(msg == "[ Reset ]"){llRegionSayTo(llGetOwner(),channel,"StopSound");music_num = 0; llStopSound(); music_song = []; llSetTimerEvent(0);}
-      if(msg == "[ Pause ]"){llRegionSayTo(llGetOwner(),channel,"StopSound");llStopSound(); llSetTimerEvent(0);}
+      if(msg == "erase"){llRegionSay(channel,"StopSound");check_song_finish = FALSE; music_num = 0; llStopSound(); music_song = []; llSetTimerEvent(0);}
+      if(msg == "start"){llRegionSay(channel,"StopSound");music_num = 0; llStopSound(); llSetTimerEvent(rate);}
+      if(msg == "start_over"){llRegionSay(channel,"StopSound");music_num = 0; llStopSound(); llSetTimerEvent(0.1);}
+      if(msg == "[ Reset ]"){llRegionSay(channel,"StopSound");music_num = 0; llStopSound(); music_song = []; llSetTimerEvent(0);}
+      if(msg == "[ Pause ]"){llRegionSay(channel,"StopSound");llStopSound(); llSetTimerEvent(0);}
       if(msg == "[ Play ]"){llSetTimerEvent(0.1);}
     } }
 
@@ -89,10 +89,10 @@ default
 
 command message
 
-//llRegionSayTo(llGetOwner(),channel,"Loop="+b+"="+llLinksetDataRead("v"));
-//llRegionSayTo(llGetOwner(),channel,"Play="+b+"="+llLinksetDataRead("v"));
+//llRegionSay(channel,"Loop="+b+"="+llLinksetDataRead("v"));
+//llRegionSay(channel,"Play="+b+"="+llLinksetDataRead("v"));
 //llRegionSayTo(llGetOwner(),"volume="+(string)llList2Float(items0,1));
-//llRegionSayTo(llGetOwner(),channel,"StopSound");
+//llRegionSay(channel,"StopSound");
 
 ////////////////////////////////////////////////////////////////////////////////
 
