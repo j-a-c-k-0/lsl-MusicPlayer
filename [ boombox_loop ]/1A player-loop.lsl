@@ -170,7 +170,7 @@ default
       sound_type = 1; play_sound = TRUE;    
       list items1 = llParseString2List(llList2String(items0,1), ["|"], []);  
       music_selection = llList2String(items1,0); music_song = llList2String(items1,1); 
-      playmusic();
+      playmusic(); if((string)llList2String(items0,2) == "menu"){dialog_topmenu();}
     } }
     listen(integer chan, string sname, key skey, string text)
     {  
