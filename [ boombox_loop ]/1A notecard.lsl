@@ -91,9 +91,9 @@ arrow_music()
   if(arrow_play_sound == TRUE){counter = counter + 1;}else{counter = counter - 1;}
   if(-1>=counter){counter = llLinksetDataCountKeys()-3;}if((counter)>llLinksetDataCountKeys()-3){counter = 0;}else
   {
-  llMessageLinked(LINK_THIS, 0,"notecard="+llLinksetDataRead("m-"+(string)counter),""); cur_page = (counter/9)+1; return;
+  llMessageLinked(LINK_THIS, 0,"notecard="+llLinksetDataRead("m-"+(string)counter)+"=menu",""); cur_page = (counter/9)+1; return;
   }
-  llMessageLinked(LINK_THIS, 0,"notecard="+llLinksetDataRead("m-0"),""); cur_page = (counter/9)+1; return;
+  llMessageLinked(LINK_THIS, 0,"notecard="+llLinksetDataRead("m-0")+"=menu",""); cur_page = (counter/9)+1; return;
 }
 default 
 {
