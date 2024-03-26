@@ -39,7 +39,7 @@ newlist += [(string)(start + i) + apnd + llList2String(tlist, i)];
 }return newlist;}
 dialog_songmenu(integer page)
 {
-integer slist_size = llLinksetDataCountKeys()-2;
+integer slist_size = llLinksetDataCountKeys()-3;
 integer pag_amt = llCeil((float)slist_size / 9.0);
 if(page > pag_amt) page = 1;
 else if(page < 1) page = pag_amt;
@@ -89,7 +89,7 @@ ichannel = llFloor(llFrand(1000000) - 100000); llListenRemove(chanhandlr); chanh
 arrow_music()
 {
   if(arrow_play_sound == TRUE){counter = counter + 1;}else{counter = counter - 1;}
-  if(-1>=counter){counter = llLinksetDataCountKeys()-3;}if((counter)>llLinksetDataCountKeys()-3){counter = 0;}else
+  if(-1>=counter){counter = llLinksetDataCountKeys()-4;}if((counter)>llLinksetDataCountKeys()-4){counter = 0;}else
   {
   llMessageLinked(LINK_THIS, 0,"notecard="+llLinksetDataRead("m-"+(string)counter)+"=menu",""); cur_page = (counter/9)+1; return;
   }
