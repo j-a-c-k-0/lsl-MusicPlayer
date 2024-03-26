@@ -169,7 +169,7 @@ if(play_sound == TRUE)
 }
 option_topmenu()
 {
-integer music_list = llGetInventoryNumber(INVENTORY_NOTECARD)+llGetInventoryNumber(INVENTORY_SOUND)+(llLinksetDataCountKeys()-2);   
+integer music_list = llGetInventoryNumber(INVENTORY_NOTECARD)+llGetInventoryNumber(INVENTORY_SOUND)+(llLinksetDataCountKeys()-3);   
 integer page=(music_list / 9) + 1 ;
 llTextBox(llGetOwner(),
 "\n"+"[ Status ]"+"\n\n"+
