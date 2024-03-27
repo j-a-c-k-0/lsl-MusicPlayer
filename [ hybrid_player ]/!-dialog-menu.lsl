@@ -71,7 +71,7 @@ llDialog(llGetOwner(),"main"+"\n"+"\n"+
 }
 dialog_option()
 {
-if(llGetInventoryType(music_selection)==INVENTORY_NOTECARD){llDialog(llGetOwner(),"option"+"\n"+"\n"+"Music = "+music_selection+"\n"+"Mode = "+play_mode()+"\n",["[ 📁 get ]","[ ⟳ reset ]","[ main ]","[  🞪  ]","[ "+play_mode()+" ]"],ichannel);return;}  
+if(llGetInventoryType(music_selection)==INVENTORY_NOTECARD){llDialog(llGetOwner(),"option"+"\n"+"\n"+"Music = "+music_selection+"\n"+"Mode = "+play_mode()+"\n",["[ 📁 get ]","[ ⟳ reset ]","[ main ]","[ "+play_mode()+" ]"],ichannel);return;}  
 llDialog(llGetOwner(),"option"+"\n"+"\n"+"Uuid = "+show_uuid()+"\n"+"Music = "+music_selection+"\n",["[ 📁 get ]","[ ⟳ reset ]","[ main ]"],ichannel);
 }
 dialog_songmenu(integer page,integer inventory_type)
