@@ -26,7 +26,7 @@ playmusic()
 {
   if(check_song_finish == TRUE){if(llLinksetDataRead("a") == "1")
   {
-    llStopSound(); music_song = []; music_timing = 3;
+    llStopSound(); music_song = []; music_timing = 5;
     llMessageLinked(LINK_THIS, 0,"[autoplay]",""); return;
   } } 
   if(safe_fail_trigger == TRUE) 
