@@ -219,7 +219,6 @@ default
       string nname = llDumpList2String(llList2ListStrided(params, 1, -1, 1), " ");
       if(readnote(nname) == 0){ llRegionSayTo(userUUID,0,"error could not find notecard"); }
       sound_type = 2; llRegionSayTo(userUUID,0," Playing [ " + music_selection+" ]"); 
-      llMessageLinked(LINK_THIS,0,"text_display=loading.","");
       }
       if((string)llList2String(items0,0) == "notecard")
       {
