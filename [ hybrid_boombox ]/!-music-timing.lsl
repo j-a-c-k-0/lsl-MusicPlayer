@@ -13,20 +13,20 @@ integer Y; for ( ; Y < Length; Y += 1)
   if((key)llList2String(A,1)){ }else
   {
   safe_fail_trigger = TRUE;    
-  llSay(0,"Invalid uuid list "+(string)Y+" [ "+llList2String(A,1)+" ]");
+  llOwnerSay("Invalid uuid list "+(string)Y+" [ "+llList2String(A,1)+" ]");
   llSetTimerEvent(0);
   return;
 } }llSetTimerEvent(rate);}
 length_mode_sound(float a,string b)
 {
 llLinkSetSoundRadius(LINK_THIS,(float)llLinksetDataRead("r"));
-if((key)b){if (a > 56) {llLoopSound(b,(float)llLinksetDataRead("v"));}else{llPlaySound(b,(float)llLinksetDataRead("v"));}}else{llSay(0,"error ??!!");return;}
+if((key)b){if (a > 56) {llLoopSound(b,(float)llLinksetDataRead("v"));}else{llPlaySound(b,(float)llLinksetDataRead("v"));}}else{llOwnerSay("error ??!!");return;}
 }
 playmusic()
 {
   if(check_song_finish == TRUE){if(llLinksetDataRead("a") == "1")
   {
-    llStopSound(); music_song = []; music_timing = 0;
+    llStopSound(); music_song = []; music_timing = 3;
     llMessageLinked(LINK_THIS, 0,"[autoplay]",""); return;
   } } 
   if(safe_fail_trigger == TRUE) 
@@ -58,6 +58,11 @@ default
     state_entry()
     {   
     llStopSound();
+    llRequestPermissions(llGetOwner(), PERMISSION_TAKE_CONTROLS);
+    }
+    run_time_permissions(integer perm)
+    {
+    if(PERMISSION_TAKE_CONTROLS & perm){llTakeControls( CONTROL_BACK|CONTROL_FWD, TRUE, TRUE );}
     }
     timer()
     {
@@ -68,7 +73,7 @@ default
       list items1 = llParseString2List(msg, ["|"], []); list items0 = llParseString2List(msg, ["/"], []);
       if(msg == "erase"){check_song_finish = FALSE; safe_fail_trigger = FALSE; music_num = 0; music_song = []; llSetTimerEvent(0);}
       if(msg == "start"){safe_fail_trigger = FALSE; music_num = 0; llStopSound(); llSetTimerEvent(0); error_test();}
-      if(llList2String(items1,0) == "upload_note"){music_song += (list)[llList2String(items1,1)];} 
+      if(llList2String(items1,0) == "upload_note"){llSetTimerEvent(0);music_song += (list)[llList2String(items1,1)];} 
       if(llList2String(items0,0) == "r"){llLinkSetSoundRadius(LINK_THIS,llList2Float(items0,1));}
       if(msg == "[ Reset ]"){music_num = 0; llStopSound(); music_song = []; llSetTimerEvent(0);}
       if(llList2String(items0,0) == "v"){llAdjustSoundVolume(llList2Float(items0,1));}
