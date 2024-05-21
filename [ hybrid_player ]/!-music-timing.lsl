@@ -26,7 +26,7 @@ playmusic()
 {
   if(check_song_finish == TRUE){if(llLinksetDataRead("a") == "1")
   {
-    llStopSound(); music_song = []; music_timing = 0;
+    llStopSound(); music_song = []; music_timing = 3;
     llMessageLinked(LINK_THIS, 0,"[autoplay]",""); return;
   } } 
   if(safe_fail_trigger == TRUE) 
@@ -73,7 +73,7 @@ default
       list items1 = llParseString2List(msg, ["|"], []); list items0 = llParseString2List(msg, ["/"], []);
       if(msg == "erase"){check_song_finish = FALSE; safe_fail_trigger = FALSE; music_num = 0; music_song = []; llSetTimerEvent(0);}
       if(msg == "start"){safe_fail_trigger = FALSE; music_num = 0; llStopSound(); llSetTimerEvent(0); error_test();}
-      if(llList2String(items1,0) == "upload_note"){music_song += (list)[llList2String(items1,1)];} 
+      if(llList2String(items1,0) == "upload_note"){llSetTimerEvent(0);music_song += (list)[llList2String(items1,1)];} 
       if(llList2String(items0,0) == "r"){llLinkSetSoundRadius(LINK_THIS,llList2Float(items0,1));}
       if(msg == "[ Reset ]"){music_num = 0; llStopSound(); music_song = []; llSetTimerEvent(0);}
       if(llList2String(items0,0) == "v"){llAdjustSoundVolume(llList2Float(items0,1));}
